@@ -24,7 +24,7 @@ public class SplashActivity extends AppCompatActivity {
                 //Do something after 1500ms
                 onShowLoginActivity();
             }
-        }, 1500);
+        }, 4500);
     }
 
     private void onShowLoginActivity() {
