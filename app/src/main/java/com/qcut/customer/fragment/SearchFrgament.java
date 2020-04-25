@@ -20,11 +20,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.qcut.customer.R;
 import com.qcut.customer.activity.MainActivity;
 import com.qcut.customer.adapter.BarberShopAdapter;
+import com.qcut.customer.model.BarberService;
 import com.qcut.customer.model.BarberShop;
 import com.qcut.customer.utils.AppUtils;
 import com.qcut.customer.utils.FireManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -78,11 +82,38 @@ public class SearchFrgament extends Fragment
                     LatLng p1 = new LatLng(AppUtils.gLat, AppUtils.gLon);
                     LatLng p2 = new LatLng(lat, lon);
                     item.distance = AppUtils.onCalculationByDistance(p1, p2);
-//                    String distance = String.format("%.1f", + "Km";
 
                     listBarberShop.add(item);
                 }
+                Collections.sort(listBarberShop, new BarberComparator());
                 adapter.notifyDataSetChanged();
+
+                FireManager.getDataFromFirebase("servicesAvailable", new FireManager.getInfoCallback() {
+                    @Override
+                    public void onGetDataCallback(DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            for (BarberShop barberShop : listBarberShop) {
+                                if (snapshot.child(barberShop.key).exists()) {
+                                    List<BarberService> services = new ArrayList<>();
+                                    Iterator<DataSnapshot> iterator = snapshot.child(barberShop.key).getChildren().iterator();
+                                    while (iterator.hasNext()) {
+                                        DataSnapshot serviceKey = iterator.next();
+                                        String serviceName = String.valueOf(serviceKey.child("serviceName").getValue());
+                                        String servicePrice = String.valueOf(serviceKey.child("servicePrice").getValue());
+                                        services.add(new BarberService(serviceName, servicePrice));
+                                    }
+                                    barberShop.services = services;
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void notFound() {
+
+                    }
+                });
+
             }
 
             @Override
@@ -91,6 +122,21 @@ public class SearchFrgament extends Fragment
                 Toast.makeText(getContext(), "There is no data", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private class BarberComparator implements Comparator<BarberShop> {
+
+        @Override
+        public int compare(BarberShop o1, BarberShop o2) {
+            if (o1.distance < o2.distance) {
+                return -1;
+            } else if (o1.distance == o2.distance) {
+                return 0;
+            } else {
+                return 1;
+            }
+        }
+
     }
 
     @Override

@@ -1,5 +1,8 @@
 package com.qcut.customer.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BarberShop {
     public String key = "";
     public String addressLine1 = "";
@@ -10,4 +13,7 @@ public class BarberShop {
     public String city = "";
     public String country = "";
     public double distance = 0;
+    public String email ="";
+    public List<BarberService> services = new ArrayList<>();
+
 }

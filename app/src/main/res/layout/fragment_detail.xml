@@ -9,15 +9,17 @@
     android:background="@android:color/white">
 
     <TextView
+        android:id="@+id/barber_email"
         style="@style/txt17Regular"
         android:textColor="@android:color/black"
-        android:text="Email : mybarber@gmail.com"/>
+        android:text="Email : n/a"/>
 
     <TextView
+        android:id="@+id/barber_phone"
         android:layout_marginTop="15dp"
         style="@style/txt17Regular"
         android:textColor="@android:color/black"
-        android:text="Phone: +353 - 87654321"
+        android:text="Phone: n/a"
         android:layout_marginBottom="15dp"/>
 
     <LinearLayout

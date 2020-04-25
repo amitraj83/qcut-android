@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -39,6 +40,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.qcut.customer.R;
+import com.qcut.customer.model.BarberShop;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -60,9 +64,11 @@ public class DetailFragment extends Fragment implements OnMapReadyCallback, Goog
     GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
 
+    BarberShop barberShop;
 
-    public DetailFragment() {
+    public DetailFragment(BarberShop barberShop) {
         // Required empty public constructor
+        this.barberShop = barberShop;
     }
 
 
@@ -71,6 +77,12 @@ public class DetailFragment extends Fragment implements OnMapReadyCallback, Goog
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
+        TextView barberEmail = view.findViewById(R.id.barber_email);
+        TextView barberPhone = view.findViewById(R.id.barber_phone);
+        if (! StringUtils.isEmpty(this.barberShop.email)) {
+            barberEmail.setText("Email : " + this.barberShop.email);
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
@@ -193,6 +205,16 @@ public class DetailFragment extends Fragment implements OnMapReadyCallback, Goog
         if (null != locations && null != providerList && providerList.size() > 0) {
             double longitude = locations.getLongitude();
             double latitude = locations.getLatitude();
+
+            if (! StringUtils.isEmpty(barberShop.gmapLink)
+                    && StringUtils.contains(barberShop.gmapLink, ",")) {
+                String[] coordinates = barberShop.gmapLink.split(",");
+                if (coordinates.length == 2 ) {
+                    longitude = Double.valueOf(coordinates[0]);
+                    latitude = Double.valueOf(coordinates[1]);
+                }
+            }
+
             Geocoder geocoder = new Geocoder(getContext(),
                     Locale.getDefault());
             try {

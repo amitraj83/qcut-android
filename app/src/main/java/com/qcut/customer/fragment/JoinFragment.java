@@ -109,9 +109,9 @@ public class JoinFragment extends Fragment implements ViewPager.OnPageChangeList
 
 
         pageAdapter = new TabAdapter(getFragmentManager());
-        pageAdapter.addFragment(new ServiceFragment(), "SERVICES");
+        pageAdapter.addFragment(new ServiceFragment(barberShop), "SERVICES");
         pageAdapter.addFragment(new HoursFragment(), "HOURS");
-        pageAdapter.addFragment(new DetailFragment(), "DETAILS");
+        pageAdapter.addFragment(new DetailFragment(barberShop), "DETAILS");
 
         viewPager.setAdapter(pageAdapter);
         tabLayout.setupWithViewPager(viewPager);

@@ -13,6 +13,7 @@
         android:paddingTop="15dp">
 
         <TextView
+            android:id="@+id/service_name"
             style="@style/txt15Regular"
             android:text="Hair Cut"
             android:textColor="@android:color/black"/>
@@ -23,6 +24,7 @@
             android:layout_weight="1"/>
 
         <TextView
+            android:id="@+id/service_price"
             style="@style/txt15Regular"
             android:text="£ 14.00"
             android:textColor="@android:color/black"/>

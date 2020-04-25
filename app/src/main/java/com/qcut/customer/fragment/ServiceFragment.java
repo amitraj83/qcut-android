@@ -12,6 +12,7 @@ import android.widget.ListView;
 
 import com.qcut.customer.R;
 import com.qcut.customer.adapter.ServiceAdapter;
+import com.qcut.customer.model.BarberShop;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,9 +22,9 @@ public class ServiceFragment extends Fragment {
     private ListView lst_service;
 
     ServiceAdapter adapter;
-
-    public ServiceFragment() {
-        // Required empty public constructor
+    BarberShop barberShop;
+    public ServiceFragment(BarberShop barberShop) {
+        this.barberShop = barberShop;
     }
 
 
@@ -33,7 +34,7 @@ public class ServiceFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_service, container, false);
         lst_service = view.findViewById(R.id.lst_service);
-        adapter = new ServiceAdapter(getContext());
+        adapter = new ServiceAdapter(getContext(), this.barberShop.services);
         lst_service.setAdapter(adapter);
         return view;
     }
