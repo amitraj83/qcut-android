@@ -42,7 +42,15 @@
         <item name="android:fontFamily">@font/montserrat_bold</item>
     </style>
 
+    <style name="BottomNavigation_ActiveItemTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/montserrat_bold</item>
+    </style>
 
+    <style name="BottomNavigation_InActiveItemTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+    </style>
 
     <style name="MyToolbarTheme"
         parent="@style/ThemeOverlay.AppCompat.Dark">

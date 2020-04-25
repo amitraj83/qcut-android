@@ -1,9 +1,7 @@
 package com.qcut.customer.fragment;
 
 
-import android.app.Application;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -29,7 +28,9 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SearchFrgament extends Fragment implements AdapterView.OnItemClickListener {
+public class SearchFrgament extends Fragment
+        implements AdapterView.OnItemClickListener,
+            View.OnClickListener{
 
     private ListView lst_barberShop;
 
@@ -46,12 +47,19 @@ public class SearchFrgament extends Fragment implements AdapterView.OnItemClickL
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         initData();
+        View barberShopItem = inflater.inflate(R.layout.item_barbershop, container, false);
+//        androidx.appcompat.widget.AppCompatButton button = (androidx.appcompat.widget.AppCompatButton)barberShopItem.findViewById(R.id.queue_button);
+        LinearLayout layout = (LinearLayout)barberShopItem.findViewById(R.id.card_background);
+//        button.setOnClickListener(this);
+//        barberShopItem.setOnClickListener(this);
+        layout.setOnClickListener(this);
 
         View view = inflater.inflate(R.layout.fragment_search_frgament, container, false);
         lst_barberShop = view.findViewById(R.id.lst_barberShop);
         adapter = new BarberShopAdapter(getContext(), listBarberShop);
         lst_barberShop.setAdapter(adapter);
         lst_barberShop.setOnItemClickListener(this);
+
         return view;
     }
 
@@ -80,6 +88,11 @@ public class SearchFrgament extends Fragment implements AdapterView.OnItemClickL
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        mainActivity.onGoPageViewFragment();
+    }
+
+    @Override
+    public void onClick(View v) {
         mainActivity.onGoPageViewFragment();
     }
 }
