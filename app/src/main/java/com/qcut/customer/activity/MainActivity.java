@@ -26,6 +26,7 @@ import com.qcut.customer.fragment.JoinFragment;
 import com.qcut.customer.fragment.ProfileFragment;
 import com.qcut.customer.fragment.QueueFragment;
 import com.qcut.customer.fragment.SearchFrgament;
+import com.qcut.customer.model.BarberShop;
 import com.qcut.customer.utils.AppUtils;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -100,9 +101,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         frgTran.commit();
     }
 
-    public void onGoPageViewFragment() {
+    public void onGoPageViewFragment(BarberShop barberShop) {
 
-        Fragment frg = new JoinFragment(MainActivity.this);
+        Fragment frg = new JoinFragment(MainActivity.this, barberShop);
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction frgTran = fm.beginTransaction();
         frgTran.replace(R.id.frg_main, frg);

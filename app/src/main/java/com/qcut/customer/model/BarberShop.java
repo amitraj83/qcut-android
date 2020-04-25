@@ -9,4 +9,5 @@ public class BarberShop {
     public String status = "";
     public String city = "";
     public String country = "";
+    public double distance = 0;
 }

@@ -94,7 +94,7 @@
                     android:layout_weight="1.2">
                 <TextView
                     android:id="@+id/txt_distance"
-                    style="@style/txt15Light"
+                    style="@style/txt16Regular"
                     android:layout_width="match_parent"
                     android:textColor="@android:color/black"
                     android:text="-- Km"
@@ -110,15 +110,20 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.8"/>
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/queue_button"
-                    style="@style/txt14"
+                <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="30dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/search_button"
-                    android:text="Queue"
-                    android:textColor="@android:color/white" />
+                    android:gravity="center"
+                    android:background="@drawable/round_border_yellow">
+
+                    <TextView
+                        style="@style/txt16Regular"
+                        android:text="Queue"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:layout_margin="5dp"/>
+
+                </LinearLayout>
 
 
                 <!---->

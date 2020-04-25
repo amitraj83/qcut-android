@@ -66,15 +66,8 @@ public class BarberShopAdapter extends BaseAdapter {
         txtAddress2.setText(mListBarberShop.get(position).addressLine2+", "+
                 mListBarberShop.get(position).city);
         shopName.setText(mListBarberShop.get(position).shopName);
-//        cityCountry.setText(mListBarberShop.get(position).city+", "+
-//                mListBarberShop.get(position).country);
-
-        String destLocation = mListBarberShop.get(position).gmapLink;
-        double lat = Double.parseDouble(destLocation.split(",")[0]);
-        double lon = Double.parseDouble(destLocation.split(",")[1]);
-        LatLng p1 = new LatLng(AppUtils.gLat, AppUtils.gLon);
-        LatLng p2 = new LatLng(lat, lon);
-        String distance = String.format("%.1f",AppUtils.onCalculationByDistance(p1, p2)) + "Km";
+//
+        String distance = String.format("%.1f",mListBarberShop.get(position).distance) + "Km";
         txtDistance.setText(distance);
         return convertView;
     }
