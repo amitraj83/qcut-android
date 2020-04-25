@@ -24,11 +24,11 @@ public class SplashActivity extends AppCompatActivity {
                 //Do something after 1500ms
                 onShowLoginActivity();
             }
-        }, 4500);
+        }, 1500);
     }
 
     private void onShowLoginActivity() {
-        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+        startActivity(new Intent(SplashActivity.this, MainActivity.class));
         this.finish();
     }
 }

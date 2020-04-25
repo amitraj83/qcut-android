@@ -95,7 +95,7 @@ public class AppUtils {
     public static void initUIActivity (Activity activity) {
         // Change Status Bar Color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activity.getWindow().setStatusBarColor(activity.getResources().getColor(R.color.mainColor, activity.getTheme()));
+            activity.getWindow().setStatusBarColor(activity.getResources().getColor(R.color.secondaryColor, activity.getTheme()));
         } else {
 //            activity.getWindow().setStatusBarColor(activity.getColor(R.color.back_green));
         }

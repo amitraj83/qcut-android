@@ -24,7 +24,8 @@
             android:layout_height="wrap_content"
             app:menu="@menu/bottom_navigation_menu"
             app:labelVisibilityMode="labeled"
-            android:background="@color/mainColor"/>
+            android:background="@color/colorPrimary"
+            />
 
     </LinearLayout>
 

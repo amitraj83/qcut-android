@@ -38,9 +38,11 @@
     </style>
     
     <style name="TabLayoutTextStyle">
-        <item name="android:textSize">14sp</item>
-        <item name="android:fontFamily">@font/montserrat_regular</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/montserrat_bold</item>
     </style>
+
+
 
     <style name="MyToolbarTheme"
         parent="@style/ThemeOverlay.AppCompat.Dark">
@@ -66,6 +68,10 @@
 
     <style name="txt15Regular" parent="txt15">
         <item name="android:fontFamily">@font/montserrat_regular</item>
+    </style>
+
+    <style name="txt15Light" parent="txt15">
+        <item name="android:fontFamily">@font/montserrat_light</item>
     </style>
 
     <style name="txt16">

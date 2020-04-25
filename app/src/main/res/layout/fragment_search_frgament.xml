@@ -10,7 +10,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
@@ -19,20 +20,15 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:padding="8dp"
-                android:background="@android:color/white">
+                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/round_gray_fill_10"
                     android:orientation="horizontal"
+                    android:background="@drawable/border"
                     android:gravity="center_vertical"
-                    android:padding="2dp">
+                    android:padding="5dp">
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -44,11 +40,13 @@
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:paddingLeft="4dp"
-                        android:textColor="@android:color/black"
-                        android:hint="Doublin 15"
-                        android:textColorHint="#d6d6d6"
+                        android:textColor="@color/secondaryColor"
+                        android:hint="Service e.g., Haircut, Shave"
+                        android:textColorHint="@color/hintColor"
+                        android:textCursorDrawable="@drawable/cursor_color_dark"
                         android:maxLines="1"
-                        android:singleLine="true"/>
+                        android:singleLine="true"
+                        android:fontFamily="@font/montserrat_light"/>
 
                 </LinearLayout>
 
@@ -63,7 +61,8 @@
             android:layout_weight="1"
             android:dividerHeight="0dp"
             android:divider="@null"
-            android:padding="10dp"/>
+            android:padding="10dp"
+            android:background="@color/off_white"/>
 
     </LinearLayout>
 
