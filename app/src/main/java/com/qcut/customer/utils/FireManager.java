@@ -9,9 +9,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -21,7 +23,7 @@ public class FireManager {
 
     private static final FirebaseStorage storage = FirebaseStorage.getInstance();
 
-    private static final DatabaseReference mainRef = database.getReference();
+    public static final DatabaseReference mainRef = database.getReference();
 
     public static String getUid() {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
@@ -77,5 +79,22 @@ public class FireManager {
     public interface getInfoCallback {
         void onGetDataCallback(DataSnapshot snapshot);
         void notFound();
+    }
+
+    public static void queryDataFromFirebase(String url, String key, String value,
+                                             final getInfoCallback callback) {
+        Query query = mainRef.child(url).orderByChild(key).equalTo(value);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                callback.onGetDataCallback(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                callback.notFound();
+            }
+        });
+
     }
 }

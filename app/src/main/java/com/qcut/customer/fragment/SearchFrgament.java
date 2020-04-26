@@ -10,8 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -143,7 +141,7 @@ public class SearchFrgament extends Fragment
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         BarberShop barberShop = listBarberShop.get(position);
         if (AppUtils.preferences.getBoolean(AppUtils.IS_QUEUED, false)
-        && AppUtils.preferences.getString(AppUtils.QUEUED_BARBER_KEY, "")
+        && AppUtils.preferences.getString(AppUtils.QUEUED_SHOP_KEY, "")
                 .equalsIgnoreCase(barberShop.key)) {
             mainActivity.bottomNavigationView.setSelectedItemId(R.id.action_queue);
         } else {

@@ -215,9 +215,10 @@
 
 
         <TextView
+            android:id="@+id/queue_view_customer_name"
             android:layout_marginTop="12dp"
             style="@style/txt20Medium"
-            android:text="Dear Hary"
+            android:text="Dear --"
             android:textColor="@android:color/black"
             android:layout_gravity="center_horizontal"/>
 
@@ -241,9 +242,10 @@
             android:background="@drawable/round_shadow_border_green_60">
 
             <TextView
+                android:id="@+id/queue_view_waiting_time"
                 style="@style/txt18Regular"
                 android:textColor="@color/mainGreen"
-                android:text="1h 26min"/>
+                android:text="--"/>
 
         </LinearLayout>
 
@@ -266,42 +268,24 @@
 
         <LinearLayout
             android:id="@+id/llt_leave_queue"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/round_shadow_border_red_20"
-            android:gravity="center_vertical"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:orientation="horizontal">
+            android:layout_margin="20dp"
+            android:background="@drawable/round_border_black"
+            android:elevation="5dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:layout_gravity="center_horizontal">
 
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_leave_queue"/>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"/>
 
             <TextView
-                style="@style/txt18Regular"
+                style="@style/txt18Bold"
                 android:text="Leave The Queue"
-                android:textColor="@android:color/holo_red_dark"/>
+                android:textColor="#FFFFFF"/>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"/>
-
-            <ImageView
-                android:visibility="invisible"
-                android:layout_width="30dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_leave_queue"/>
 
         </LinearLayout>
 

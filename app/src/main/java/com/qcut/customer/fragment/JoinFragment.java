@@ -1,7 +1,6 @@
 package com.qcut.customer.fragment;
 
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -10,8 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import android.text.format.Time;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,15 +28,12 @@ import com.qcut.customer.utils.AppUtils;
 import com.qcut.customer.utils.CustomerStatus;
 import com.qcut.customer.utils.FireManager;
 import com.qcut.customer.utils.TimeUtil;
-import com.volobot.stringchooser.StringChooser;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -109,12 +103,7 @@ public class JoinFragment extends Fragment implements ViewPager.OnPageChangeList
         likesIcon.setBounds(0, 0, 60, 60);
         likes.setCompoundDrawables(likesIcon, null, null, null);
 
-        Drawable statusIcon = mainActivity.getResources().getDrawable(R.drawable.circle_grey);
-        if (barberShop.status.equalsIgnoreCase("ONLINE")) {
-            statusIcon = mainActivity.getResources().getDrawable(R.drawable.circle_green);
-        }
-        statusIcon.setBounds(0, 0, 30, 30);
-        status.setCompoundDrawables(statusIcon, null, null, null);
+
 
 //        Drawable statusIcon = mainActivity.getResources().getDrawable(R.drawable.circle_grey);
 //        statusIcon.setBounds(0, 0, 60, 60);
@@ -136,7 +125,37 @@ public class JoinFragment extends Fragment implements ViewPager.OnPageChangeList
 
         llt_join_btn1.setOnClickListener(this);
         llt_join_btn.setOnClickListener(this);
+        llt_join_btn.setEnabled(false);
 
+        FireManager.getDataFromFirebase(
+                "barberWaitingQueues/" + barberShop.key + "_" + TimeUtil.getTodayDDMMYYYY(),
+                new FireManager.getInfoCallback() {
+                    @Override
+                    public void onGetDataCallback(DataSnapshot snapshot) {
+                        Drawable statusIcon = mainActivity.getResources().getDrawable(R.drawable.circle_grey);
+                        if (!snapshot.exists()) {
+                            llt_join_btn.setBackgroundColor(mainActivity.getResources().getColor(R.color.browser_actions_bg_grey));
+                            ((TextView)llt_join_btn.findViewById(R.id.jtq))
+                                    .setTextColor(mainActivity.getResources().getColor(R.color.lightGray));
+                            ((TextView)llt_join_btn1.findViewById(R.id.jtq_1))
+                                    .setTextColor(mainActivity.getResources().getColor(R.color.lightGray));
+                            llt_join_btn1.setBackgroundColor(mainActivity.getResources().getColor(R.color.browser_actions_bg_grey));
+                            llt_join_btn1.setEnabled(false);
+                        } else {
+                            statusIcon = mainActivity.getResources().getDrawable(R.drawable.circle_green);
+                        }
+
+                        statusIcon.setBounds(0, 0, 30, 30);
+                        status.setCompoundDrawables(statusIcon, null, null, null);
+
+
+                    }
+
+                    @Override
+                    public void notFound() {
+
+                    }
+                });
     }
 
     @Override
@@ -164,15 +183,15 @@ public class JoinFragment extends Fragment implements ViewPager.OnPageChangeList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.llt_join_btn:
-                onShowBarberSelect();
+                onJoinTheQueue();
                 break;
             case R.id.llt_join_btn1:
-                onShowBarberSelect();
+                onJoinTheQueue();
                 break;
         }
     }
 
-    private void onShowBarberSelect() {
+    private void onJoinTheQueue() {
 
 
 
@@ -188,6 +207,7 @@ public class JoinFragment extends Fragment implements ViewPager.OnPageChangeList
                         new FireManager.getInfoCallback() {
                     @Override
                     public void onGetDataCallback(DataSnapshot snapshot) {
+
                         if (snapshot.exists()) {
                             Iterator<DataSnapshot> iterator = snapshot.getChildren().iterator();
                             String desiredBarberKey = "";
@@ -208,39 +228,42 @@ public class JoinFragment extends Fragment implements ViewPager.OnPageChangeList
                                 }
                             }
 
-                            String key = snapshot.child(desiredBarberKey).getRef().push().getKey();
-                            Map<String, Object> customerToQueue = new HashMap<>();
-                            customerToQueue.put("absent", "false");
-                            customerToQueue.put("actualBarberId", desiredBarberKey);
-                            customerToQueue.put("actualProcessingTime", 0);
-                            customerToQueue.put("anyBarber", true);
-                            customerToQueue.put("arrivalTime", new Date().getTime());
-                            customerToQueue.put("departureTime", 0);
-                            customerToQueue.put("dragAdjustedTime", 0);
-                            customerToQueue.put("expectedWaitingTime", 0);
-                            customerToQueue.put("key", key);
-                            customerToQueue.put("lastPositionChangedTime", 0);
-                            customerToQueue.put("placeInQueue", -1);
-                            customerToQueue.put("serviceStartTime", 0);
-                            customerToQueue.put("serviceTime", 0);
-                            customerToQueue.put("status", CustomerStatus.QUEUE);
-                            customerToQueue.put("timeAdded", -1);
-                            customerToQueue.put("customerId", AppUtils.preferences.getString(AppUtils.USER_ID, ""));
-                            customerToQueue.put("name",
-                                    AppUtils.preferences.getString(AppUtils.USER_DISPLAY_NAME,"--"));
-                            Task<Void> voidTask = snapshot.child(desiredBarberKey).child(key).getRef().updateChildren(customerToQueue);
-                            voidTask.addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    AppUtils.preferences.edit()
-                                            .putString( AppUtils.QUEUED_BARBER_KEY, barberShop.key).apply();
-                                    AppUtils.preferences.edit()
-                                            .putBoolean(AppUtils.IS_QUEUED, true).apply();
+                            String key = AppUtils.preferences.getString(AppUtils.USER_ID, null);
+                            if (!StringUtils.isEmpty(key)) {
+                                Map<String, Object> customerToQueue = new HashMap<>();
+                                customerToQueue.put("absent", false);
+                                customerToQueue.put("actualBarberId", desiredBarberKey);
+                                customerToQueue.put("actualProcessingTime", 0);
+                                customerToQueue.put("anyBarber", true);
+                                customerToQueue.put("arrivalTime", new Date().getTime());
+                                customerToQueue.put("departureTime", 0);
+                                customerToQueue.put("dragAdjustedTime", 0);
+                                customerToQueue.put("expectedWaitingTime", 0);
+                                customerToQueue.put("key", key);
+                                customerToQueue.put("channel", "CUSTOMER_APP");
+                                customerToQueue.put("lastPositionChangedTime", 0);
+                                customerToQueue.put("placeInQueue", -1);
+                                customerToQueue.put("serviceStartTime", 0);
+                                customerToQueue.put("serviceTime", 0);
+                                customerToQueue.put("status", CustomerStatus.QUEUE);
+                                customerToQueue.put("timeAdded", -1);
+                                customerToQueue.put("customerId", AppUtils.preferences.getString(AppUtils.USER_ID, ""));
+                                customerToQueue.put("name",
+                                        AppUtils.preferences.getString(AppUtils.USER_DISPLAY_NAME, "--"));
+                                Task<Void> voidTask = snapshot.child(desiredBarberKey).child(key).getRef().updateChildren(customerToQueue);
+                                voidTask.addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        AppUtils.preferences.edit()
+                                                .putString(AppUtils.QUEUED_SHOP_KEY, barberShop.key).apply();
+                                        AppUtils.preferences.edit()
+                                                .putBoolean(AppUtils.IS_QUEUED, true).apply();
 
-                                    mainActivity.bottomNavigationView.setSelectedItemId(R.id.action_queue);
-                                    mainActivity.onGoQueueFrg(barberShop);
-                                }
-                            });
+                                        mainActivity.bottomNavigationView.setSelectedItemId(R.id.action_queue);
+                                        mainActivity.onGoQueueFrg(barberShop);
+                                    }
+                                });
+                            }
 
                         }
                     }

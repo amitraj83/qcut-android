@@ -1,12 +1,12 @@
 package com.qcut.customer.fragment;
 
 
-import android.app.Dialog;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +14,23 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.qcut.customer.R;
 import com.qcut.customer.activity.MainActivity;
 import com.qcut.customer.model.BarberShop;
 import com.qcut.customer.utils.AppUtils;
-import com.volobot.stringchooser.StringChooser;
+import com.qcut.customer.utils.BarberStatus;
+import com.qcut.customer.utils.FireManager;
+import com.qcut.customer.utils.TimeUtil;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Iterator;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,6 +44,8 @@ public class QueueFragment extends Fragment implements View.OnClickListener {
     private BarberShop barberShop;
     private TextView shopName, addressLine1, addressLine2;
     private TextView distance, likes, status;
+    private TextView customerName, waitingTime;
+
     public QueueFragment(MainActivity activity, BarberShop barberShop) {
         mainActivity = activity;
         this.barberShop = barberShop;
@@ -52,6 +63,8 @@ public class QueueFragment extends Fragment implements View.OnClickListener {
         distance = view.findViewById(R.id.txt_distance);
         likes = view.findViewById(R.id.txt_likes);
         status = view.findViewById(R.id.txt_status);
+        customerName = view.findViewById(R.id.queue_view_customer_name);
+        waitingTime = view.findViewById(R.id.queue_view_waiting_time);
         initUIView(view);
         return view;
     }
@@ -62,20 +75,109 @@ public class QueueFragment extends Fragment implements View.OnClickListener {
         llt_leave_queue = view.findViewById(R.id.llt_leave_queue);
         llt_select_barber = view.findViewById(R.id.llt_select_barber);
 
-        if (AppUtils.preferences.getBoolean(AppUtils.IS_QUEUED, false) && barberShop != null) {
-            rlt_unqueue.setVisibility(View.GONE);
-            llt_queue.setVisibility(View.VISIBLE);
-            shopName.setText(barberShop.shopName);
-            addressLine1.setText(barberShop.addressLine1);
-            addressLine2.setText(barberShop.addressLine2+", "+barberShop.city);
-            distance.setText(String.format("%.1f",barberShop.distance) + "Km");
-            likes.setText("21 likes");
-            status.setText(barberShop.status);
+        if (AppUtils.preferences.getBoolean(AppUtils.IS_QUEUED, false)) {
+
+            final String shopKey = AppUtils.preferences.getString(AppUtils.QUEUED_SHOP_KEY, null);
+            if (!StringUtils.isEmpty(shopKey)) {
+
+                FireManager.getDataFromFirebase("shopDetails/" + shopKey, new FireManager.getInfoCallback() {
+                    @Override
+                    public void onGetDataCallback(DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            rlt_unqueue.setVisibility(View.GONE);
+                            llt_queue.setVisibility(View.VISIBLE);
+                            shopName.setText(String.valueOf(snapshot.child("shopName").getValue()));
+                            addressLine1.setText(String.valueOf(snapshot.child("addressLine1").getValue()));
+                            addressLine2.setText(String.valueOf(snapshot.child("addressLine2").getValue()) + ", " +
+                                    String.valueOf(snapshot.child("city").getValue()));
+
+                            String key = String.valueOf(snapshot.child("key").getValue());
+                            String destLocation = String.valueOf(snapshot.child("gmapLink").getValue());
+                            if (!StringUtils.isEmpty(destLocation)
+                                    && StringUtils.contains(destLocation, ",")) {
+                                double lat = Double.parseDouble(destLocation.split(",")[0]);
+                                double lon = Double.parseDouble(destLocation.split(",")[1]);
+                                LatLng p1 = new LatLng(AppUtils.gLat, AppUtils.gLon);
+                                LatLng p2 = new LatLng(lat, lon);
+                                distance.setText(String.format("%.1f", AppUtils.onCalculationByDistance(p1, p2)) + "Km");
+                            }
+
+                            likes.setText("21 likes");
+                            Drawable distanceIcon = mainActivity.getResources().getDrawable(R.drawable.ic_location_white);
+                            distanceIcon.setBounds(0, 0, 60, 60);
+                            distance.setCompoundDrawables(distanceIcon, null, null, null);
+
+
+                            Drawable likesIcon = mainActivity.getResources().getDrawable(R.drawable.ic_favorite_white);
+                            likesIcon.setBounds(0, 0, 60, 60);
+                            likes.setCompoundDrawables(likesIcon, null, null, null);
+
+                            final String customerDisplayName = AppUtils.preferences.getString(AppUtils.USER_DISPLAY_NAME, null);
+                            if (!StringUtils.isEmpty(customerDisplayName)) {
+                                customerName.setText(customerDisplayName);
+                            }
+
+                            Drawable statusIcon = mainActivity.getResources().getDrawable(R.drawable.circle_grey);
+                            statusIcon.setBounds(0, 0, 30, 30);
+                            status.setCompoundDrawables(statusIcon, null, null, null);
+
+
+                        final String customerKey = AppUtils.preferences.getString(AppUtils.USER_ID, null);
+                            if (!StringUtils.isEmpty(customerKey)) {
+
+                                FireManager.mainRef.child("barberWaitingQueues/" + shopKey + "_" + TimeUtil.getTodayDDMMYYYY())
+                                        .addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                if (dataSnapshot.exists()) {
+
+                                                    status.setText(BarberStatus.ONLINE.name());
+                                                    Drawable statusIcon = mainActivity.getResources().getDrawable(R.drawable.circle_green);
+                                                    statusIcon.setBounds(0, 0, 30, 30);
+                                                    status.setCompoundDrawables(statusIcon, null, null, null);
+
+
+                                                    Iterator<DataSnapshot> barberIT = dataSnapshot.getChildren().iterator();
+                                                    while (barberIT.hasNext()) {
+                                                        DataSnapshot aBarber = barberIT.next();
+                                                        if (aBarber.child(customerKey).exists()) {
+                                                            String expectedWaitingTimeStr = String.valueOf(aBarber.child(customerKey).child("expectedWaitingTime").getValue());
+                                                            if (!StringUtils.isEmpty(expectedWaitingTimeStr) && StringUtils.isNumeric(expectedWaitingTimeStr)) {
+                                                                long expectedWaitingTime = Long.valueOf(expectedWaitingTimeStr);
+                                                                if (expectedWaitingTime == 0) {
+                                                                    waitingTime.setText("Ready");
+                                                                } else {
+                                                                    String displayWaitingTime = TimeUtil.getDisplayWaitingTime(expectedWaitingTime);
+                                                                    waitingTime.setText(displayWaitingTime);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void notFound() {
+
+                    }
+                });
+
+
+            }
+
         } else {
             rlt_unqueue.setVisibility(View.VISIBLE);
             llt_queue.setVisibility(View.GONE);
         }
-
 
 
         llt_leave_queue.setOnClickListener(this);
@@ -122,9 +224,42 @@ public class QueueFragment extends Fragment implements View.OnClickListener {
                 dialog.show();*/
                 break;
             case R.id.llt_leave_queue:
-                AppUtils.preferences.edit().putBoolean(AppUtils.IS_QUEUED, false).apply();
-                AppUtils.preferences.edit().putString(AppUtils.QUEUED_BARBER_KEY, "").apply();
-                mainActivity.bottomNavigationView.setSelectedItemId(R.id.action_search);
+
+                final String customerId = AppUtils.preferences.getString(AppUtils.USER_ID, null);
+                String shopKey = AppUtils.preferences.getString(AppUtils.QUEUED_SHOP_KEY, null);
+                if (!StringUtils.isEmpty(shopKey)) {
+                    FireManager.getDataFromFirebase("barberWaitingQueues/" + shopKey + "_" + TimeUtil.getTodayDDMMYYYY(), new FireManager.getInfoCallback() {
+                        @Override
+                        public void onGetDataCallback(DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                Iterator<DataSnapshot> barberIT = snapshot.getChildren().iterator();
+                                while (barberIT.hasNext()) {
+                                    DataSnapshot aBarber = barberIT.next();
+                                    if (aBarber.child(customerId).exists()) {
+                                        Task<Void> voidTask = aBarber.child(customerId).getRef().removeValue();
+                                        voidTask.addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                AppUtils.preferences.edit().putBoolean(AppUtils.IS_QUEUED, false).apply();
+                                                AppUtils.preferences.edit().putString(AppUtils.QUEUED_SHOP_KEY, "").apply();
+                                                mainActivity.bottomNavigationView.setSelectedItemId(R.id.action_search);
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void notFound() {
+
+                        }
+                    });
+
+                }
+
+
+
                 break;
         }
     }

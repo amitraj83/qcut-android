@@ -202,6 +202,7 @@
 
 
         <TextView
+            android:id="@+id/jtq_1"
             style="@style/txt18Bold"
             android:text="Join The Queue"
             android:textColor="#FFFFFF"/>
@@ -224,6 +225,7 @@
         android:visibility="gone">
 
         <TextView
+            android:id="@+id/jtq"
             style="@style/txt18Bold"
             android:textColor="#FFFFFF"
             android:text="Join The Queue"/>

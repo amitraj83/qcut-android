@@ -49,6 +49,10 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.qcut.customer.R;
 import com.qcut.customer.adapter.RegisterActivity;
 import com.qcut.customer.model.User;
@@ -269,6 +273,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         AppUtils.gUser = snapshot.getValue(User.class);
                                         new SharedPrefManager(LoginActivity.this);
                                         SharedPrefManager.setStringSharedPref("type", "normal");
+                                        AppUtils.preferences.edit()
+                                                .putString(AppUtils.USER_DISPLAY_NAME,
+                                                        AppUtils.gUser.name).apply();
+                                        AppUtils.preferences.edit().putString(AppUtils.USER_EMAIL,
+                                                AppUtils.gUser.email).apply();
+                                        AppUtils.preferences.edit().putBoolean(AppUtils.IS_LOGGED_IN, true).apply();
+                                        AppUtils.preferences.edit().putString(AppUtils.USER_ID,
+                                                AppUtils.gUser.id).apply();
                                         AppUtils.showOtherActivity(LoginActivity.this, MainActivity.class, 0);
 
                                     }
@@ -370,14 +382,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
                 // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = result.getSignInAccount();
+                final GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
-                AppUtils.preferences.edit()
-                        .putString(AppUtils.USER_DISPLAY_NAME, account.getDisplayName()).apply();
-                AppUtils.preferences.edit().putString(AppUtils.USER_EMAIL, account.getEmail()).apply();
-                AppUtils.preferences.edit().putBoolean(AppUtils.IS_LOGGED_IN, true).apply();
-                AppUtils.preferences.edit().putString(AppUtils.USER_ID, account.getId()).apply();
-
             } else {
                 // Google Sign In failed, update UI appropriately
                 Toast.makeText(this, "Google Account has a problem.", Toast.LENGTH_SHORT).show();
@@ -400,17 +406,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(LoginActivity.this, "Sign in Success..", Toast.LENGTH_SHORT).show();
                     AppUtils.gUser.id = FireManager.getUid();
                     AppUtils.gUser.email = account.getEmail();
+                    AppUtils.gUser.name = account.getDisplayName();
+                    AppUtils.gUser.googleID = account.getId();
                     AppUtils.gUser.photo = account.getPhotoUrl().toString();
 
                     Map<String, String> params = new HashMap<>();
                     params.put("id", AppUtils.gUser.id);
                     params.put("email", AppUtils.gUser.email);
+                    params.put("name", AppUtils.gUser.name);
+                    params.put("googleID", AppUtils.gUser.googleID);
                     params.put("photo", AppUtils.gUser.photo);
 
                     FireManager.saveDataToFirebase(params, "Customers/" + AppUtils.gUser.id, new FireManager.saveInfoCallback() {
                         @Override
                         public void onSetDataCallback(Map<String, String> params) {
                             Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                            AppUtils.preferences.edit()
+                                    .putString(AppUtils.USER_DISPLAY_NAME,
+                                            AppUtils.gUser.name).apply();
+                            AppUtils.preferences.edit().putString(AppUtils.USER_EMAIL,
+                                    AppUtils.gUser.email).apply();
+                            AppUtils.preferences.edit().putBoolean(AppUtils.IS_LOGGED_IN, true).apply();
+                            AppUtils.preferences.edit().putString(AppUtils.USER_ID,
+                                    AppUtils.gUser.id).apply();
+
                         }
                     });
                     new SharedPrefManager(LoginActivity.this);
@@ -451,7 +470,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (!task.isSuccessful()) {
-                    Toast.makeText(LoginActivity.this, "error", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Facebook Login error", Toast.LENGTH_SHORT).show();
                 } else {
                     GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
                         @Override
@@ -463,17 +482,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                 AppUtils.gUser.id = FireManager.getUid();
                                 AppUtils.gUser.email = object.getString("email");
+                                AppUtils.gUser.name = object.getString("name");
                                 AppUtils.gUser.photo = "";
 
                                 Map<String, String> params = new HashMap<>();
                                 params.put("id", AppUtils.gUser.id);
                                 params.put("email", AppUtils.gUser.email);
+                                params.put("name", AppUtils.gUser.name);
                                 params.put("photo", AppUtils.gUser.photo);
 
                                 FireManager.saveDataToFirebase(params, "Customers/" + AppUtils.gUser.id, new FireManager.saveInfoCallback() {
                                     @Override
                                     public void onSetDataCallback(Map<String, String> params) {
                                         Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                        AppUtils.preferences.edit()
+                                                .putString(AppUtils.USER_DISPLAY_NAME,
+                                                        AppUtils.gUser.name).apply();
+                                        AppUtils.preferences.edit().putString(AppUtils.USER_EMAIL,
+                                                AppUtils.gUser.email).apply();
+                                        AppUtils.preferences.edit().putBoolean(AppUtils.IS_LOGGED_IN, true).apply();
+                                        AppUtils.preferences.edit().putString(AppUtils.USER_ID,
+                                                AppUtils.gUser.id).apply();
                                     }
                                 });
                                 new SharedPrefManager(LoginActivity.this);

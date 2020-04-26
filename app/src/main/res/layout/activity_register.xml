@@ -40,6 +40,35 @@
             android:layout_marginRight="40dp">
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tll_name"
+                style="@style/MEditText"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/ic_email_white"
+                android:hint="John Doe">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txt_name"
+                    android:textColor="@android:color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp">
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tll_login_email"
                 style="@style/MEditText"
                 app:endIconMode="custom"

@@ -29,13 +29,15 @@ import com.qcut.customer.utils.AppUtils;
 import com.qcut.customer.utils.FireManager;
 import com.qcut.customer.utils.SharedPrefManager;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private TextInputLayout tll_email, tll_password;
-    private TextInputEditText txt_email, txt_password;
+    private TextInputLayout tll_email, tll_password, tll_name;
+    private TextInputEditText txt_email, txt_password, txt_name;
 
     private LinearLayout llt_signin;
 
@@ -110,8 +112,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void reigsterWithEmailPassword() {
+        final String strName = txt_name.getText().toString();
         final String strEmail = txt_email.getText().toString();
         final String strPassword = txt_password.getText().toString();
+        if (StringUtils.isEmpty(strName)) {
+            Toast.makeText(this, "Invalid Name", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (!AppUtils.validate(strEmail)) {
             Toast.makeText(this, "Invalid Email", Toast.LENGTH_SHORT).show();
             return;
@@ -137,11 +144,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                                 AppUtils.gUser.id = FireManager.getUid();
                                                 AppUtils.gUser.email = strEmail;
                                                 AppUtils.gUser.photo = "";
+                                                AppUtils.gUser.name = strName;
 
                                                 Map<String, String> params = new HashMap<>();
                                                 params.put("id", AppUtils.gUser.id);
                                                 params.put("email", AppUtils.gUser.email);
-                                                params.put("photo", AppUtils.gUser.photo);
+//                                                params.put("photo", AppUtils.gUser.photo);
+                                                params.put("name", AppUtils.gUser.name);
 
 
 
@@ -149,6 +158,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                                     @Override
                                                     public void onSetDataCallback(Map<String, String> params) {
                                                         Toast.makeText(RegisterActivity.this, "Success", Toast.LENGTH_SHORT).show();
+
                                                         AppUtils.showOtherActivity(RegisterActivity.this, LoginActivity.class, 0);
 
                                                     }
