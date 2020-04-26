@@ -43,8 +43,21 @@ public class FireManager {
         });
     }
 
+    public static void updateDataToFirebase(final Map<String, Object> params, String url, final updateInfoCallback callback) {
+        mainRef.child(url).updateChildren(params).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                callback.onSetDataCallback(params);
+            }
+        });
+    }
+
     public interface saveInfoCallback {
         void onSetDataCallback(Map<String, String> params);
+    }
+
+    public interface updateInfoCallback {
+        void onSetDataCallback(Map<String, Object> params);
     }
 
     public static void getDataFromFirebase(String url, final getInfoCallback callback) {

@@ -5,6 +5,7 @@ import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
@@ -17,13 +18,24 @@ import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class AppUtils {
 
-    public static boolean isQueued = false;
+//    public static boolean isQueued = false;
 
     public static double gLat, gLon;
 
     public static User gUser = new User();
+
+    public static final String IS_LOGGED_IN = "isLoggedIn";
+    public static final String IS_QUEUED = "isQueued";
+    public static final String QUEUED_BARBER_KEY = "queuedBarberKey";
+    public static final String USER_DISPLAY_NAME = "userName";
+    public static final String USER_EMAIL = "userEmail";
+    public static final String USER_ID = "userID";
+
+    public static SharedPreferences preferences ;
 
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
@@ -93,6 +105,9 @@ public class AppUtils {
     }
 
     public static void initUIActivity (Activity activity) {
+
+        preferences = activity.getSharedPreferences("login", MODE_PRIVATE);
+
         // Change Status Bar Color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             activity.getWindow().setStatusBarColor(activity.getResources().getColor(R.color.secondaryColor, activity.getTheme()));

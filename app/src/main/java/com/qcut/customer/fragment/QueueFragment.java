@@ -12,9 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.qcut.customer.R;
 import com.qcut.customer.activity.MainActivity;
+import com.qcut.customer.model.BarberShop;
 import com.qcut.customer.utils.AppUtils;
 import com.volobot.stringchooser.StringChooser;
 
@@ -30,9 +32,12 @@ public class QueueFragment extends Fragment implements View.OnClickListener {
 
     private RelativeLayout rlt_unqueue;
     private LinearLayout llt_queue, llt_leave_queue, llt_select_barber;
-
-    public QueueFragment(MainActivity activity) {
+    private BarberShop barberShop;
+    private TextView shopName, addressLine1, addressLine2;
+    private TextView distance, likes, status;
+    public QueueFragment(MainActivity activity, BarberShop barberShop) {
         mainActivity = activity;
+        this.barberShop = barberShop;
     }
 
 
@@ -41,6 +46,12 @@ public class QueueFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_queue, container, false);
+        shopName = view.findViewById(R.id.shop_name);
+        addressLine1 = view.findViewById(R.id.txt_address1);
+        addressLine2 = view.findViewById(R.id.txt_address2);
+        distance = view.findViewById(R.id.txt_distance);
+        likes = view.findViewById(R.id.txt_likes);
+        status = view.findViewById(R.id.txt_status);
         initUIView(view);
         return view;
     }
@@ -51,13 +62,21 @@ public class QueueFragment extends Fragment implements View.OnClickListener {
         llt_leave_queue = view.findViewById(R.id.llt_leave_queue);
         llt_select_barber = view.findViewById(R.id.llt_select_barber);
 
-        if (AppUtils.isQueued) {
+        if (AppUtils.preferences.getBoolean(AppUtils.IS_QUEUED, false) && barberShop != null) {
             rlt_unqueue.setVisibility(View.GONE);
             llt_queue.setVisibility(View.VISIBLE);
+            shopName.setText(barberShop.shopName);
+            addressLine1.setText(barberShop.addressLine1);
+            addressLine2.setText(barberShop.addressLine2+", "+barberShop.city);
+            distance.setText(String.format("%.1f",barberShop.distance) + "Km");
+            likes.setText("21 likes");
+            status.setText(barberShop.status);
         } else {
             rlt_unqueue.setVisibility(View.VISIBLE);
             llt_queue.setVisibility(View.GONE);
         }
+
+
 
         llt_leave_queue.setOnClickListener(this);
         llt_select_barber.setOnClickListener(this);
@@ -67,7 +86,8 @@ public class QueueFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.llt_select_barber:
-                DisplayMetrics metrics = getResources().getDisplayMetrics();
+                mainActivity.bottomNavigationView.setSelectedItemId(R.id.action_search);
+                /*DisplayMetrics metrics = getResources().getDisplayMetrics();
                 int width = metrics.widthPixels;
                 int height = metrics.heightPixels;
 
@@ -99,7 +119,7 @@ public class QueueFragment extends Fragment implements View.OnClickListener {
                         llt_queue.setVisibility(View.VISIBLE);
                     }
                 });
-                dialog.show();
+                dialog.show();*/
                 break;
             case R.id.llt_leave_queue:
                 mainActivity.bottomNavigationView.setSelectedItemId(R.id.action_search);

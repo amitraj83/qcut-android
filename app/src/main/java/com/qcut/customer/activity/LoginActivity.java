@@ -90,8 +90,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             isLocation = true;
             AppUtils.gLat = location.getLatitude();
             AppUtils.gLon = location.getLongitude();
-//            AppUtils.gLat = 53.1424;
-//            AppUtils.gLon = -7.6921;
         }
 
         @Override
@@ -374,6 +372,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
+                AppUtils.preferences.edit()
+                        .putString(AppUtils.USER_DISPLAY_NAME, account.getDisplayName()).apply();
+                AppUtils.preferences.edit().putString(AppUtils.USER_EMAIL, account.getEmail()).apply();
+                AppUtils.preferences.edit().putBoolean(AppUtils.IS_LOGGED_IN, true).apply();
+                AppUtils.preferences.edit().putString(AppUtils.USER_ID, account.getId()).apply();
+
             } else {
                 // Google Sign In failed, update UI appropriately
                 Toast.makeText(this, "Google Account has a problem.", Toast.LENGTH_SHORT).show();

@@ -141,6 +141,13 @@ public class SearchFrgament extends Fragment
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        mainActivity.onGoPageViewFragment(listBarberShop.get(position));
+        BarberShop barberShop = listBarberShop.get(position);
+        if (AppUtils.preferences.getBoolean(AppUtils.IS_QUEUED, false)
+        && AppUtils.preferences.getString(AppUtils.QUEUED_BARBER_KEY, "")
+                .equalsIgnoreCase(barberShop.key)) {
+            mainActivity.bottomNavigationView.setSelectedItemId(R.id.action_queue);
+        } else {
+            mainActivity.onGoPageViewFragment(barberShop);
+        }
     }
 }

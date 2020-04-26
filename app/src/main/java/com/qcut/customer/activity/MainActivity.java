@@ -2,23 +2,12 @@ package com.qcut.customer.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.qcut.customer.R;
@@ -65,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 onGoSearchFrg();
                 break;
             case R.id.action_queue:
-                onGoQueueFrg();
+                onGoQueueFrg(new BarberShop());
                 break;
             case R.id.action_profile:
                 onGoProfileFrg();
@@ -83,9 +72,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         frgTran.commit();
     }
 
-    public void onGoQueueFrg() {
+    public void onGoQueueFrg(BarberShop barberShop) {
         currentFrg = 1;
-        Fragment frg = new QueueFragment(MainActivity.this);
+        Fragment frg = new QueueFragment(MainActivity.this, barberShop);
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction frgTran = fm.beginTransaction();
         frgTran.replace(R.id.frg_main, frg);
