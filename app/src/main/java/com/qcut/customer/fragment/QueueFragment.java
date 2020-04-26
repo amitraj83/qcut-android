@@ -122,6 +122,8 @@ public class QueueFragment extends Fragment implements View.OnClickListener {
                 dialog.show();*/
                 break;
             case R.id.llt_leave_queue:
+                AppUtils.preferences.edit().putBoolean(AppUtils.IS_QUEUED, false).apply();
+                AppUtils.preferences.edit().putString(AppUtils.QUEUED_BARBER_KEY, "").apply();
                 mainActivity.bottomNavigationView.setSelectedItemId(R.id.action_search);
                 break;
         }

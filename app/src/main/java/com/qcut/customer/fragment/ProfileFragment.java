@@ -145,19 +145,23 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             initUIView();
         } else {
             FirebaseAuth.getInstance().signOut();
-
-            if (SharedPrefManager.getStringSharedPref("type").equals("google")){
-                mGoogleSignInClient.signOut().addOnCompleteListener(mainActivity,
-                        new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                mainActivity.onGoLoginActivity();
-                            }
-                        });
-            } else if (SharedPrefManager.getStringSharedPref("type").equals("facebook")) {
-                LoginManager.getInstance().logOut();
-                mainActivity.onGoLoginActivity();
-            }
+//            SharedPrefManager sharedPrefManager = new SharedPrefManager(mainActivity);
+//            if (sharedPrefManager.getStringSharedPref("type").equals("google")){
+//                mGoogleSignInClient.signOut().addOnCompleteListener(mainActivity,
+//                        new OnCompleteListener<Void>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<Void> task) {
+//                                mainActivity.onGoLoginActivity();
+//                            }
+//                        });
+//            } else if (sharedPrefManager.getStringSharedPref("type").equals("facebook")) {
+//                LoginManager.getInstance().logOut();
+//                mainActivity.onGoLoginActivity();
+//            }
+            AppUtils.preferences.edit().putBoolean(AppUtils.IS_LOGGED_IN, false).apply();
+            AppUtils.preferences.edit().putString(AppUtils.USER_ID, null).apply();
+            AppUtils.preferences.edit().putString(AppUtils.USER_DISPLAY_NAME, null).apply();
+            AppUtils.preferences.edit().putString(AppUtils.USER_EMAIL, null).apply();
             mainActivity.onGoLoginActivity();
         }
     }
