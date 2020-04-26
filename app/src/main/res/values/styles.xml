@@ -92,6 +92,10 @@
         <item name="android:fontFamily">@font/montserrat_regular</item>
     </style>
 
+    <style name="txt16Light" parent="txt16">
+        <item name="android:fontFamily">@font/montserrat_light</item>
+    </style>
+
     <style name="txt17">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -132,6 +136,9 @@
 
     <style name="txt20Regular" parent="txt20">
         <item name="android:fontFamily">@font/montserrat_regular</item>
+    </style>
+    <style name="txt20Light" parent="txt20">
+        <item name="android:fontFamily">@font/montserrat_light</item>
     </style>
 
     <style name="txt20Medium" parent="txt20">

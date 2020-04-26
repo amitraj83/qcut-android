@@ -57,7 +57,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 onGoQueueFrg(new BarberShop());
                 break;
             case R.id.action_profile:
-                onGoProfileFrg();
+                boolean isLoggedIn = AppUtils.preferences.getBoolean(AppUtils.IS_LOGGED_IN, false);
+                if (isLoggedIn) {
+                    onGoProfileFrg();
+                } else {
+                    AppUtils.showOtherActivity(MainActivity.this, LoginActivity.class, 0);
+                }
                 break;
         }
         return true;

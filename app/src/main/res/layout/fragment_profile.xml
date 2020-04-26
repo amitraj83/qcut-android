@@ -13,95 +13,106 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <RelativeLayout
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="210dp">
+            android:layout_height="wrap_content">
 
-            <ImageView
+            <View
+                android:id="@+id/top_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/bg_barbershop"
-                android:scaleType="fitXY"/>
+                android:layout_height="0dp"
+                android:background="@color/colorPrimary"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/bottom_view"
+                app:layout_constraintVertical_bias="0.5"
+                />
 
-            <RelativeLayout
-                android:id="@+id/rlt_avatar"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_centerInParent="true">
+            <View
+                android:id="@+id/bottom_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@color/off_white"
+                app:layout_constraintTop_toBottomOf="@id/top_view"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintVertical_bias="0.5"
+                />
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/img_avatar_default"
-                    android:scaleType="fitXY"/>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_camera_red"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentRight="true"/>
-
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/rlt_avatar"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <ImageView
-                    android:visibility="invisible"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_pencil"
-                    android:layout_marginLeft="20dp"
-                    android:layout_below="@+id/rlt_avatar"
-                    android:layout_marginRight="20dp"/>
+                app:cardCornerRadius="8dp"
+                app:cardElevation="8dp"
+                app:cardPreventCornerOverlap="false"
+                android:layout_margin="20dp"
+                android:elevation="8dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                >
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/txt_name"
-                    style="@style/txt16Regular"
-                    android:textColor="@android:color/white"
-                    android:text="Johnson Dillon"/>
+                    <RelativeLayout
+                        android:id="@+id/rlt_avatar"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_centerInParent="true"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintBottom_toTopOf="@+id/user_name"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginBottom="20dp">
 
-                <ImageView
-                    android:id="@+id/img_edit_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_pencil"
-                    android:layout_marginLeft="20dp"
-                    android:layout_below="@+id/rlt_avatar"/>
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/img_avatar_default"
+                            android:scaleType="fitXY"/>
 
-            </LinearLayout>
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_camera_red"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentRight="true"
+                            android:elevation="5dp"/>
 
-        </RelativeLayout>
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/user_name"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="20dp"
+                        style="@style/txt22Bold"
+                        android:text="Loading..."
+                        android:textColor="@android:color/black"
+                        android:gravity="center"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/rlt_avatar"
+                        />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
             android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="60dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="35dp"
-                android:background="@drawable/oval_shadow_border_gray"
-                android:gravity="center">
 
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/ic_avatar_red"/>
-
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -110,12 +121,13 @@
                 android:orientation="vertical">
 
                 <TextView
-                    style="@style/txt17Regular"
+                    style="@style/txt16Light"
                     android:text="Email"
-                    android:textColor="@color/txtGray"/>
+                    android:textColor="@color/lightGray"/>
 
                 <TextView
-                    style="@style/txt20Regular"
+                    android:id="@+id/user_email"
+                    style="@style/txt20Light"
                     android:text="myemail@gmail.com"
                     android:textColor="@android:color/black"/>
 
@@ -126,76 +138,54 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
             android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="60dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="35dp"
-                android:background="@drawable/oval_shadow_border_gray"
-                android:gravity="center">
 
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/ic_lock_yellow"/>
-
-            </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
                 <TextView
-                    style="@style/txt17Regular"
+                    style="@style/txt16Light"
                     android:text="Password"
-                    android:textColor="@color/txtGray"/>
+                    android:textColor="@color/lightGray"/>
 
                 <TextView
-                    style="@style/txt20Regular"
+                    android:id="@+id/user_password"
+                    style="@style/txt20Light"
                     android:text="************************"
-                    android:textColor="@android:color/black"/>
+                    android:textColor="@android:color/black"
+                    android:inputType="textPassword"/>
 
             </LinearLayout>
 
-            <ImageView
+            <TextView
                 android:id="@+id/img_edit_password"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_pencil"
-                android:layout_gravity="center_vertical"/>
+                android:layout_gravity="center_vertical"
+                style="@style/txt16Light"
+                android:textColor="@color/lightGray"
+                android:text="Edit"/>
+
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:layout_marginRight="30dp"
             android:layout_marginLeft="30dp"
             android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="60dp"
-                android:layout_height="match_parent"
-                android:layout_marginRight="35dp"
-                android:background="@drawable/oval_shadow_border_gray"
-                android:gravity="center">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/ic_location_blue"/>
-
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -205,23 +195,33 @@
                 android:orientation="vertical">
 
                 <TextView
-                    style="@style/txt17Regular"
-                    android:text="Location"
-                    android:textColor="@color/txtGray"/>
+                    style="@style/txt16Light"
+                    android:text="City"
+                    android:textColor="@color/lightGray"/>
 
                 <TextView
-                    style="@style/txt20Regular"
-                    android:text="Dublin 15"
+                    android:id="@+id/user_city"
+                    style="@style/txt20Light"
+                    android:text="Loading..."
                     android:textColor="@android:color/black"/>
 
             </LinearLayout>
 
-            <ImageView
+            <TextView
                 android:id="@+id/img_edit_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_pencil"
-                android:layout_gravity="center_vertical"/>
+                android:layout_gravity="center_vertical"
+                style="@style/txt16Light"
+                android:textColor="@color/lightGray"
+                android:text="Edit"/>
+
+<!--            <ImageView-->
+<!--                android:id="@+id/img_edit_location"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:src="@drawable/ic_pencil"-->
+<!--                android:layout_gravity="center_vertical"/>-->
 
         </LinearLayout>
 
@@ -232,18 +232,24 @@
 
         <LinearLayout
             android:id="@+id/llt_logout"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="100dp"
-            android:layout_marginRight="100dp"
-            android:layout_marginBottom="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_margin="20dp"
+            android:background="@drawable/round_border_black"
+            android:elevation="5dp"
             android:gravity="center"
-            android:background="@drawable/round_shadow_border_black_10">
+            android:orientation="horizontal"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:layout_gravity="center_horizontal">
+
+
 
             <TextView
-                style="@style/txt20Bold"
-                android:text="Logout"
-                android:textColor="@android:color/black"/>
+                style="@style/txt18Bold"
+                android:text="   Logout   "
+                android:textColor="#FFFFFF"/>
+
 
         </LinearLayout>
 
@@ -362,12 +368,13 @@
                 <com.volobot.stringchooser.StringChooser
                     android:id="@+id/location_string_choose"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="150dp"
                     app:selectedColor="@android:color/holo_blue_dark"
                     app:notSelectedColor="@android:color/holo_green_light"
                     app:selectedSize="22sp"
                     app:notSelectedSize="20sp"
-                    app:notSelectedOpacity="0.3"/>
+                    app:notSelectedOpacity="0.3"
+                    android:layout_gravity="center_vertical"/>
 
             </LinearLayout>
 
@@ -386,12 +393,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:background="@drawable/round_border_red_8">
+                android:elevation="5dp"
+                android:background="@drawable/round_border_red">
 
                 <TextView
                     style="@style/txt20Bold"
                     android:text="Cancel"
-                    android:textColor="@android:color/holo_red_dark"/>
+                    android:textColor="@android:color/white"/>
 
             </LinearLayout>
 
@@ -402,12 +410,14 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:background="@drawable/round_border_green_8">
+                android:elevation="5dp"
+                android:background="@drawable/round_border_green"
+                >
 
                 <TextView
                     style="@style/txt20Bold"
                     android:text="Save"
-                    android:textColor="@color/mainGreen"/>
+                    android:textColor="@android:color/white"/>
 
             </LinearLayout>
 

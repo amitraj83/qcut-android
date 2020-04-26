@@ -7,5 +7,5 @@ public class User {
     public String photo = "";
     public String googleID = "";
     public String fbID = "";
-
+    public String city = "n/a";
 }
