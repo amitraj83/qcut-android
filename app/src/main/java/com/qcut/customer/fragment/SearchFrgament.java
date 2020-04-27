@@ -139,11 +139,37 @@ public class SearchFrgament extends Fragment
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        BarberShop barberShop = listBarberShop.get(position);
-        if (AppUtils.preferences.getBoolean(AppUtils.IS_QUEUED, false)
-        && AppUtils.preferences.getString(AppUtils.QUEUED_SHOP_KEY, "")
-                .equalsIgnoreCase(barberShop.key)) {
-            mainActivity.bottomNavigationView.setSelectedItemId(R.id.action_queue);
+        final BarberShop barberShop = listBarberShop.get(position);
+        boolean isLoggedIn = AppUtils.preferences.getBoolean(AppUtils.IS_LOGGED_IN, false);
+        if (isLoggedIn) {
+            final String customerKey = AppUtils.preferences.getString(AppUtils.USER_ID, null);
+            FireManager.getDataFromFirebase(FireManager.RootNames.BARBER_WAITING_QUEUES + "/" + barberShop.key,
+                    new FireManager.getInfoCallback() {
+                        @Override
+                        public void onGetDataCallback(DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                boolean customerFoundInQueue = false;
+                                Iterator<DataSnapshot> barberIT = snapshot.getChildren().iterator();
+                                while (barberIT.hasNext()) {
+                                    DataSnapshot aBarber = barberIT.next();
+                                    if (aBarber.child(customerKey).exists()) {
+                                        customerFoundInQueue = true;
+                                        break;
+                                    }
+                                }
+                                if (customerFoundInQueue) {
+                                    mainActivity.bottomNavigationView.setSelectedItemId(R.id.action_queue);
+                                }
+                            } else {
+                                mainActivity.onGoPageViewFragment(barberShop);
+                            }
+                        }
+
+                        @Override
+                        public void notFound() {
+                            mainActivity.onGoPageViewFragment(barberShop);
+                        }
+                    });
         } else {
             mainActivity.onGoPageViewFragment(barberShop);
         }

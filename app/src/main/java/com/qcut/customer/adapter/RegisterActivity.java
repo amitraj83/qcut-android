@@ -15,10 +15,14 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.qcut.customer.R;
@@ -62,6 +66,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         txt_email = findViewById(R.id.txt_login_email);
         txt_password = findViewById(R.id.txt_login_password);
         llt_signin = findViewById(R.id.llt_signin);
+        tll_name = findViewById(R.id.tll_name);
+        txt_name = findViewById(R.id.txt_name);
     }
 
     private void initUIEvent() {
@@ -169,8 +175,25 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
 
                         } else {
-                            AppUtils.onDismissProgressDialog(dialog);
-                            Toast.makeText(RegisterActivity.this, "Email already used", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "Registration Failed - "+task.getException().getMessage(), Toast.LENGTH_LONG).show();
+
+                            /*AuthCredential credential = EmailAuthProvider.getCredential(strEmail, strPassword);
+                            Task<AuthResult> authResultTask = mAuth.signInWithCredential(credential);
+                            authResultTask.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    AppUtils.onDismissProgressDialog(dialog);
+                                    Toast.makeText(RegisterActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            authResultTask.addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    AppUtils.onDismissProgressDialog(dialog);
+                                    Toast.makeText(RegisterActivity.this, "Registration Failed - "+e.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            });*/
+
                         }
                     }
                 });

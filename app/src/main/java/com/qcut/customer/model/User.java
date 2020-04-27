@@ -8,4 +8,5 @@ public class User {
     public String googleID = "";
     public String fbID = "";
     public String city = "n/a";
+    public boolean registeredInApp = false;
 }

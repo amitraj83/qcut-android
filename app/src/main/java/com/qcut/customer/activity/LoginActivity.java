@@ -260,6 +260,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         final ProgressDialog dialog = AppUtils.onShowProgressDialog(this, "Connecting", false);
 
+
+
         mAuth.signInWithEmailAndPassword(strEmail, strPassword)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -410,28 +412,62 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     AppUtils.gUser.googleID = account.getId();
                     AppUtils.gUser.photo = account.getPhotoUrl().toString();
 
-                    Map<String, String> params = new HashMap<>();
-                    params.put("id", AppUtils.gUser.id);
-                    params.put("email", AppUtils.gUser.email);
+                    final Map<String, Object> params = new HashMap<>();
                     params.put("name", AppUtils.gUser.name);
-                    params.put("googleID", AppUtils.gUser.googleID);
                     params.put("photo", AppUtils.gUser.photo);
+                    params.put("name", AppUtils.gUser.name);
 
-                    FireManager.saveDataToFirebase(params, "Customers/" + AppUtils.gUser.id, new FireManager.saveInfoCallback() {
+                    FireManager.getDataFromFirebase("Customers/" + AppUtils.gUser.id, new FireManager.getInfoCallback() {
                         @Override
-                        public void onSetDataCallback(Map<String, String> params) {
-                            Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                            AppUtils.preferences.edit()
-                                    .putString(AppUtils.USER_DISPLAY_NAME,
-                                            AppUtils.gUser.name).apply();
-                            AppUtils.preferences.edit().putString(AppUtils.USER_EMAIL,
-                                    AppUtils.gUser.email).apply();
-                            AppUtils.preferences.edit().putBoolean(AppUtils.IS_LOGGED_IN, true).apply();
-                            AppUtils.preferences.edit().putString(AppUtils.USER_ID,
-                                    AppUtils.gUser.id).apply();
+                        public void onGetDataCallback(DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                FireManager.updateDataToFirebase(params, "Customers/" + AppUtils.gUser.id, new FireManager.updateInfoCallback() {
+                                    @Override
+                                    public void onSetDataCallback(Map<String, Object> params) {
+                                        Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                        AppUtils.preferences.edit()
+                                                .putString(AppUtils.USER_DISPLAY_NAME,
+                                                        AppUtils.gUser.name).apply();
+                                        AppUtils.preferences.edit().putString(AppUtils.USER_EMAIL,
+                                                AppUtils.gUser.email).apply();
+                                        AppUtils.preferences.edit().putBoolean(AppUtils.IS_LOGGED_IN, true).apply();
+                                        AppUtils.preferences.edit().putString(AppUtils.USER_ID,
+                                                AppUtils.gUser.id).apply();
+                                    }
+                                });
+                            } else {
+                                final Map<String, Object> params = new HashMap<>();
+                                params.put("id", AppUtils.gUser.id);
+                                params.put("email", AppUtils.gUser.email);
+                                params.put("name", AppUtils.gUser.name);
+                                params.put("googleID", AppUtils.gUser.googleID);
+                                params.put("photo", AppUtils.gUser.photo);
+                                params.put("registeredInApp", false);
+                                FireManager.saveDataToFirebase(params, "Customers/" + AppUtils.gUser.id, new FireManager.saveObjectCallback() {
+                                    @Override
+                                    public void onSetDataCallback(Map<String, Object> params) {
+                                        Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                                        AppUtils.preferences.edit()
+                                                .putString(AppUtils.USER_DISPLAY_NAME,
+                                                        AppUtils.gUser.name).apply();
+                                        AppUtils.preferences.edit().putString(AppUtils.USER_EMAIL,
+                                                AppUtils.gUser.email).apply();
+                                        AppUtils.preferences.edit().putBoolean(AppUtils.IS_LOGGED_IN, true).apply();
+                                        AppUtils.preferences.edit().putString(AppUtils.USER_ID,
+                                                AppUtils.gUser.id).apply();
+
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void notFound() {
 
                         }
                     });
+
+
                     new SharedPrefManager(LoginActivity.this);
                     SharedPrefManager.setStringSharedPref("type", "google");
                     AppUtils.showOtherActivity(LoginActivity.this, MainActivity.class, -1);

@@ -75,6 +75,93 @@ public class QueueFragment extends Fragment implements View.OnClickListener {
         llt_leave_queue = view.findViewById(R.id.llt_leave_queue);
         llt_select_barber = view.findViewById(R.id.llt_select_barber);
 
+
+        FireManager.userQueueStatusData(new FireManager.getInfoCallback() {
+            @Override
+            public void onGetDataCallback(final DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    FireManager.getShopDetails(String.valueOf(snapshot.child("key").getValue()), new FireManager.ShopInfoCallBack() {
+                        @Override
+                        public void onGetShopDetails(BarberShop barberShop) {
+                            rlt_unqueue.setVisibility(View.GONE);
+                            llt_queue.setVisibility(View.VISIBLE);
+                            shopName.setText(barberShop.shopName);
+                            addressLine1.setText(barberShop.addressLine1);
+                            addressLine2.setText(barberShop.addressLine2 + ", " +
+                                    barberShop.city);
+
+                            String key = barberShop.key;
+                            String destLocation = barberShop.gmapLink;
+                            if (!StringUtils.isEmpty(destLocation)
+                                    && StringUtils.contains(destLocation, ",")) {
+                                double lat = Double.parseDouble(destLocation.split(",")[0]);
+                                double lon = Double.parseDouble(destLocation.split(",")[1]);
+                                LatLng p1 = new LatLng(AppUtils.gLat, AppUtils.gLon);
+                                LatLng p2 = new LatLng(lat, lon);
+                                distance.setText(String.format("%.1f", AppUtils.onCalculationByDistance(p1, p2)) + "Km");
+                            }
+
+                            likes.setText("21 likes");
+                            Drawable distanceIcon = mainActivity.getResources().getDrawable(R.drawable.ic_location_white);
+                            distanceIcon.setBounds(0, 0, 60, 60);
+                            distance.setCompoundDrawables(distanceIcon, null, null, null);
+
+
+                            Drawable likesIcon = mainActivity.getResources().getDrawable(R.drawable.ic_favorite_white);
+                            likesIcon.setBounds(0, 0, 60, 60);
+                            likes.setCompoundDrawables(likesIcon, null, null, null);
+
+                            final String customerDisplayName = AppUtils.preferences.getString(AppUtils.USER_DISPLAY_NAME, null);
+                            if (!StringUtils.isEmpty(customerDisplayName)) {
+                                customerName.setText(customerDisplayName);
+                            }
+
+//                            Drawable statusIcon = mainActivity.getResources().getDrawable(R.drawable.circle_grey);
+//                            statusIcon.setBounds(0, 0, 30, 30);
+//                            status.setCompoundDrawables(statusIcon, null, null, null);
+
+                            status.setText(BarberStatus.ONLINE.name());
+                            Drawable statusIcon = mainActivity.getResources().getDrawable(R.drawable.circle_green);
+                            statusIcon.setBounds(0, 0, 30, 30);
+                            status.setCompoundDrawables(statusIcon, null, null, null);
+
+                            String expectedWaitingTimeStr = String.valueOf(snapshot.child("expectedWaitingTime").getValue());
+                            if (!StringUtils.isEmpty(expectedWaitingTimeStr) && StringUtils.isNumeric(expectedWaitingTimeStr)) {
+                                long expectedWaitingTime = Long.valueOf(expectedWaitingTimeStr);
+                                if (expectedWaitingTime == 0) {
+                                    waitingTime.setText("Ready");
+                                } else {
+                                    String displayWaitingTime = TimeUtil.getDisplayWaitingTime(expectedWaitingTime);
+                                    waitingTime.setText(displayWaitingTime);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void notFound() {
+                            rlt_unqueue.setVisibility(View.VISIBLE);
+                            llt_queue.setVisibility(View.GONE);
+                        }
+                    });
+                } else {
+                    rlt_unqueue.setVisibility(View.VISIBLE);
+                    llt_queue.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void notFound() {
+                rlt_unqueue.setVisibility(View.VISIBLE);
+                llt_queue.setVisibility(View.GONE);
+            }
+        });
+
+
+
+
+
+
+/*
         if (AppUtils.preferences.getBoolean(AppUtils.IS_QUEUED, false)) {
 
             final String shopKey = AppUtils.preferences.getString(AppUtils.QUEUED_SHOP_KEY, null);
@@ -175,10 +262,9 @@ public class QueueFragment extends Fragment implements View.OnClickListener {
             }
 
         } else {
-            rlt_unqueue.setVisibility(View.VISIBLE);
-            llt_queue.setVisibility(View.GONE);
-        }
 
+        }
+        */
 
         llt_leave_queue.setOnClickListener(this);
         llt_select_barber.setOnClickListener(this);

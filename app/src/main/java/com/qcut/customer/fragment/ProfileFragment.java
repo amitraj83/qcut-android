@@ -1,6 +1,7 @@
 package com.qcut.customer.fragment;
 
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -20,6 +21,7 @@ import com.qcut.customer.activity.MainActivity;
 import com.qcut.customer.model.User;
 import com.qcut.customer.utils.AppUtils;
 import com.qcut.customer.utils.FireManager;
+import com.qcut.customer.utils.SharedPrefManager;
 import com.volobot.stringchooser.StringChooser;
 
 import org.apache.commons.lang3.StringUtils;
@@ -40,7 +42,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     int editSelectIndex = 0;
 
     private LinearLayout llt_profile_view, llt_profile_edit, llt_logout, llt_profile_name, llt_profile_password, llt_cancel, llt_save;
-    private ImageView imgEditName;
+    private ImageView imgEditName, userProfileImage;
     private TextView txtTitle, userName, userEmail, userCity, imgEditLocation, imgEditPassword;
     private StringChooser locationChooser;
 
@@ -63,6 +65,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         llt_profile_password = view.findViewById(R.id.llt_edit_password);
         llt_cancel = view.findViewById(R.id.llt_cacel);
         llt_save = view.findViewById(R.id.llt_save);
+        userProfileImage = view.findViewById(R.id.user_profile_image);
 
 //        imgEditName = view.findViewById(R.id.img_edit_name);
         imgEditPassword = view.findViewById(R.id.img_edit_password);
@@ -90,7 +93,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initUIData() {
-        String userID = AppUtils.preferences.getString(AppUtils.USER_ID, null);
+        final String userID = AppUtils.preferences.getString(AppUtils.USER_ID, null);
         if (!StringUtils.isEmpty(userID)) {
             FireManager.getDataFromFirebase("Customers/" + userID, new FireManager.getInfoCallback() {
                 @Override
@@ -100,6 +103,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                         userName.setText(user.name);
                         userEmail.setText(user.email);
                         userCity.setText(user.city);
+                        if (user.registeredInApp) {
+                            imgEditPassword.setVisibility(View.VISIBLE);
+                        }
+//                        Glide.with(mainActivity).load(user.photo).into(userProfileImage);
                     }
                 }
 
@@ -138,6 +145,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             }
             mainActivity.bottomNavigationView.setVisibility(View.GONE);
         }
+
+
 
     }
 

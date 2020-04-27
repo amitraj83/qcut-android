@@ -69,6 +69,7 @@
                         android:layout_marginBottom="20dp">
 
                         <ImageView
+                            android:id="@+id/user_profile_image"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:src="@drawable/img_avatar_default"
@@ -173,6 +174,7 @@
                 android:layout_gravity="center_vertical"
                 style="@style/txt16Light"
                 android:textColor="@color/lightGray"
+                android:visibility="gone"
                 android:text="Edit"/>
 
 
@@ -313,6 +315,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -322,6 +326,30 @@
                     android:padding="12dp">
 
                     <EditText
+                        android:id="@+id/user_existing_password"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_lock_yellow"/>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/round_border_green_5"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="12dp">
+
+                    <EditText
+                        android:id="@+id/user_update_password_1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -344,6 +372,7 @@
                     android:padding="12dp">
 
                     <EditText
+                        android:id="@+id/user_update_password_2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
